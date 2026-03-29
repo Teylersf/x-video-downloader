@@ -310,39 +310,20 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     const { url, filename } = msg;
     console.log("[X-DL BG] Downloading:", filename);
 
-    fetch(url)
-      .then((resp) => {
-        if (!resp.ok) throw new Error("HTTP " + resp.status);
-        return resp.blob();
-      })
-      .then((blob) => {
-        const sizeMB = (blob.size / 1024 / 1024).toFixed(2);
-        console.log("[X-DL BG] Fetched", sizeMB, "MB");
-
-        if (blob.size < 5000) {
-          sendResponse({ success: false, error: "Too small: " + blob.size + " bytes" });
-          return;
+    // Pass URL directly to Chrome's download manager — no blob in memory.
+    // video.twimg.com URLs from the API are public CDN links.
+    chrome.downloads.download(
+      { url, filename, conflictAction: "uniquify" },
+      (downloadId) => {
+        if (chrome.runtime.lastError) {
+          console.error("[X-DL BG] Download error:", chrome.runtime.lastError.message);
+          sendResponse({ success: false, error: chrome.runtime.lastError.message });
+        } else {
+          console.log("[X-DL BG] Download started, id:", downloadId);
+          sendResponse({ success: true, downloadId });
         }
-
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          chrome.downloads.download(
-            { url: reader.result, filename, conflictAction: "uniquify" },
-            (downloadId) => {
-              if (chrome.runtime.lastError) {
-                sendResponse({ success: false, error: chrome.runtime.lastError.message });
-              } else {
-                sendResponse({ success: true, downloadId, sizeMB });
-              }
-            }
-          );
-        };
-        reader.readAsDataURL(blob);
-      })
-      .catch((err) => {
-        console.error("[X-DL BG] Fetch failed:", err.message);
-        sendResponse({ success: false, error: err.message });
-      });
+      }
+    );
 
     return true;
   }
