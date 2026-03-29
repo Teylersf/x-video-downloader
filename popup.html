@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #15202b;
+      color: #e7e9ea;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 18px;
+      margin-bottom: 16px;
+      color: #1d9bf0;
+      text-align: center;
+    }
+    .field {
+      margin-bottom: 14px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      color: #8b98a5;
+      margin-bottom: 6px;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      background: #1e2e3d;
+      border: 1px solid #38444d;
+      border-radius: 8px;
+      color: #e7e9ea;
+      font-size: 15px;
+      outline: none;
+    }
+    input[type="number"]:focus {
+      border-color: #1d9bf0;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 9999px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.85; }
+    #startBtn {
+      background: #1d9bf0;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    #stopBtn {
+      background: #67070f;
+      color: #fff;
+    }
+    .status {
+      margin-top: 14px;
+      padding: 10px 12px;
+      background: #1e2e3d;
+      border-radius: 8px;
+      font-size: 13px;
+      text-align: center;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .status.running { border-left: 3px solid #1d9bf0; }
+    .status.done { border-left: 3px solid #00ba7c; }
+    .status.stopped { border-left: 3px solid #f4212e; }
+    .scroll-speed {
+      margin-bottom: 14px;
+    }
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      background: #1e2e3d;
+      border: 1px solid #38444d;
+      border-radius: 8px;
+      color: #e7e9ea;
+      font-size: 15px;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>X Video Downloader</h1>
+
+  <div class="field">
+    <label>Max Videos to Download</label>
+    <input type="number" id="maxVideos" min="1" max="10000" value="100">
+  </div>
+
+  <div class="scroll-speed">
+    <label>Scroll Speed</label>
+    <select id="scrollSpeed">
+      <option value="slow">Slow (safer)</option>
+      <option value="medium" selected>Medium</option>
+      <option value="fast">Fast</option>
+    </select>
+  </div>
+
+  <button class="btn" id="startBtn">Start Downloading</button>
+  <button class="btn" id="stopBtn">Stop</button>
+
+  <div class="status" id="status">Ready — navigate to your X feed and press Start</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
